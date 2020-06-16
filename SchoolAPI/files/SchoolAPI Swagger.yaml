@@ -1,0 +1,977 @@
+swagger: "2.0"
+info:
+  description: "This is a swagger for SchoolAPI for Information Systems 690 Summer 2020."
+  version: "1.0.0"
+  title: "Swagger SchoolAPI"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost.swagger.io"
+basePath: "/v2"
+tags:
+- name: "UserManagement"
+  description: "The users that are members of the school"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://swagger.io"
+- name: "CourseManagment"
+  description: "The courses students take e.g. title, description and content"    
+- name: "CourseAssignment"
+  description: "Allowing assignments to be added to courses"    
+- name: "CourseSection"
+  description: "Allowing sections to be created to enroll teachers and students in"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+- name: "SectionEnrollment"
+  description: "Allowing students and teachers to be assigned to courses"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://swagger.io"     
+- name: "SectionAssignment"
+  description: "Allowing assignments to be submitted in a section and graded"
+  externalDocs:
+    description: "Find out more about our store"
+    url: "http://swagger.io"    
+schemes:
+- "https"
+- "http"
+paths:
+  /CorSec:
+    post:
+      tags:
+      - "CourseSection"
+      summary: "Add a new course section"
+      description: ""
+      operationId: "addCourseSection"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Allowing sections to be created to enroll teachers and students in"
+        required: true
+        schema:
+          $ref: "#/definitions/CourseSection"
+      responses:
+        "405":
+          description: "Invalid input"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+    put:
+      tags:
+      - "CourseSection"
+      summary: "Update an Existing Course Section"
+      description: ""
+      operationId: "updateCourseSection"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "CourseSection that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/CourseSection"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Pet not found"
+        "405":
+          description: "Validation exception"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+  /CorSec/:
+    get:
+      tags:
+      - "CourseSection"
+      summary: "Finds all course section"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "findPetsByStatus"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "status"
+        in: "query"
+        description: "Status values that need to be considered for filter"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "available"
+          - "pending"
+          - "sold"
+          default: "available"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CourseSection"
+        "400":
+          description: "Invalid status value"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+  /CorSec/{CourseID}:
+    get:
+      tags:
+      - "CourseSection"
+      summary: "Find course section by ID"
+      description: "Returns a single Course Section"
+      operationId: "getPetById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseID"
+        in: "path"
+        description: "ID of pet to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CourseSection"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Pet not found"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "CourseSection"
+      summary: "Deletes a Course Section"
+      description: ""
+      operationId: "deletePet"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "CourseID"
+        in: "path"
+        description: "Pet id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Pet not found"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+  /CorManage/:
+    post:
+      tags:
+      - "CourseManagment"
+      summary: "Inserts a course"
+      description: ""
+      operationId: "insertCorManage"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/CourseManagement"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CourseManagement"
+        "400":
+          description: "Invalid Order"
+  /CorManage:
+    get:
+      tags:
+      - "CourseManagment"
+      summary: "Returns all courses"
+      description: "Returns a map of status codes to quantities"
+      operationId: "getCorseManage"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "integer"
+              format: "int32"        
+  /CorManage/{CourseManageID}:
+    get:
+      tags:
+      - "CourseManagment"
+      summary: "Find course order by ID"
+      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
+      operationId: "getCorManageById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseManageID"
+        in: "path"
+        description: "ID of pet that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CourseManagement"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+    put:
+      tags:
+      - "CourseManagment"
+      summary: "Update Courses"
+      description: "This can only be done by the logged in user."
+      operationId: "updateCourses"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseManageID"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated Courses"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"          
+    delete:
+      tags:
+      - "CourseManagment"
+      summary: "Delete course assignment by ID"
+      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
+      operationId: "DeleteCorManageById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseManageID"
+        in: "path"
+        description: "ID of the order that needs to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"        
+  /CorAssign:
+    get:
+      tags:
+      - "CourseAssignment"
+      summary: "Returns Course Assignment"
+      description: "Returns a map of status codes to quantities"
+      operationId: "getInventory"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "integer"
+              format: "int32"
+      security:
+      - api_key: []
+  /CorAssign/:
+    post:
+      tags:
+      - "CourseAssignment"
+      summary: "Inserts a new course assignment"
+      description: ""
+      operationId: "placeOrder"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/CourseAssignments"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CourseAssignments"
+        "400":
+          description: "Invalid Order"
+  /CorAssign/{CourseAssignID}:
+    get:
+      tags:
+      - "CourseAssignment"
+      summary: "Find course assignment by ID"
+      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
+      operationId: "getOrderById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseAssignID"
+        in: "path"
+        description: "ID of pet that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CourseAssignments"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+    put:
+      tags:
+      - "CourseAssignment"
+      summary: "Update Courses Assignments"
+      description: "This can only be done by the logged in user."
+      operationId: "CourseAssignID"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseAssignID"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated Course Assignment"
+        required: true
+        schema:
+          $ref: "#/definitions/CourseAssignments"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"          
+    delete:
+      tags:
+      - "CourseAssignment"
+      summary: "Delete course assignment by ID"
+      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
+      operationId: "deleteOrder"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "CourseAssignID"
+        in: "path"
+        description: "ID of the order that needs to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+  /User:
+    post:
+      tags:
+      - "UserManagement"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        default:
+          description: "successful operation"
+  /user/login:
+    get:
+      tags:
+      - "UserManagement"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /user/logout:
+    get:
+      tags:
+      - "UserManagement"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+  /user:
+    get:
+      tags:
+      - "UserManagement"
+      summary: "Get all users"
+      description: ""
+      operationId: "getAllUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/{username}:
+    get:
+      tags:
+      - "UserManagement"
+      summary: "Get user by user name"
+      description: ""
+      operationId: "getUserByName"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be fetched. Use user1 for testing. "
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"          
+    put:
+      tags:
+      - "UserManagement"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+    delete:
+      tags:
+      - "UserManagement"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /SecAssign:
+    get:
+      tags:
+      - "SectionAssignment"
+      summary: "Gets all section assignment"
+      description: "Returns a map of status codes to quantities"
+      operationId: "getSecAssign"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "integer"
+              format: "int32"
+      security:
+      - api_key: []
+  /SecAssign/:
+    post:
+      tags:
+      - "SectionAssignment"
+      summary: "Inserts a new section assignment"
+      description: ""
+      operationId: "insertSecAssign"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/SectionAssignment"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SectionAssignment"
+        "400":
+          description: "Invalid Order"
+  /SecAssign/{SectionAssignID}:
+    get:
+      tags:
+      - "SectionAssignment"
+      summary: "Find section assignment by ID"
+      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
+      operationId: "getSecAssignById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionAssignID"
+        in: "path"
+        description: "ID of pet that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SectionAssignment"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+    put:
+      tags:
+      - "SectionAssignment"
+      summary: "Update Section Assignment"
+      description: "This can only be done by the logged in user."
+      operationId: "addSecAssignById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionAssignID"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated Section Assignment"
+        required: true
+        schema:
+          $ref: "#/definitions/SectionAssignment"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"          
+    delete:
+      tags:
+      - "SectionAssignment"
+      summary: "Delete section assignment by ID"
+      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
+      operationId: "DeleteSecAssignById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionAssignID"
+        in: "path"
+        description: "ID of the order that needs to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"  
+  /SecEnroll:
+    get:
+      tags:
+      - "SectionEnrollment"
+      summary: "Returns section enrollment"
+      description: "Returns a map of status codes to quantities"
+      operationId: "getSecEnroll"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "integer"
+              format: "int32"
+      security:
+      - api_key: []
+  /SecEnroll/:
+    post:
+      tags:
+      - "SectionEnrollment"
+      summary: "Inserts a Section Enrollment"
+      description: ""
+      operationId: "insertSecEnroll"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/SectionEnrollment"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SectionEnrollment"
+        "400":
+          description: "Invalid Order"
+  /SecEnroll/{SectionEnrollID}:
+    get:
+      tags:
+      - "SectionEnrollment"
+      summary: "Find section enrollment by ID"
+      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
+      operationId: "getSecEnrollById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionEnrollID"
+        in: "path"
+        description: "ID of pet that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SectionEnrollment"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+    put:
+      tags:
+      - "SectionEnrollment"
+      summary: "Update Section Enrollment"
+      description: "This can only be done by the logged in user."
+      operationId: "addSecEnrollById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionEnrollID"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated Course Assignment"
+        required: true
+        schema:
+          $ref: "#/definitions/SectionEnrollment"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"           
+    delete:
+      tags:
+      - "SectionEnrollment"
+      summary: "Delete section enrollment by ID"
+      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
+      operationId: "DeleteSecEnrollById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "SectionEnrollID"
+        in: "path"
+        description: "ID of the order that needs to be deleted"
+        required: true
+        type: "integer"
+        minimum: 1.0
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"            
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      username:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      userStatus:
+        type: "integer"
+        format: "int32"
+        description: "User Status"
+    xml:
+      name: "User"
+  CourseSection:
+    type: "object"
+    properties:
+      CourseID:
+        type: "integer"
+        format: "int64"
+      StartDate:
+        type: "string"
+        format: "date-time"
+      CreatedDate:
+        type: "string"
+        format: "date-time"
+      UpdatedDate:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "CourseSection"
+  CourseManagement:
+    type: "object"
+    properties:
+      CourseManageID:
+        type: "integer"
+        format: "int64"
+      CourseTitle:
+        type: "string"
+      Description:
+        type: "string"        
+      CreatedDate:
+        type: "string"
+        format: "date-time"
+      UpdatedDate:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "CourseManagement"   
+  CourseAssignments:
+    type: "object"
+    properties:
+      CourseAssignID:
+        type: "integer"
+        format: "int64"
+      AssignmentTitle:
+        type: "string"
+      Description:
+        type: "string"        
+      CourseID:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "CourseAssignments"  
+  SectionEnrollment:
+    type: "object"
+    properties:
+      SectionEnrollID:
+        type: "integer"
+        format: "int64"
+      UserID:
+        type: "integer"
+        format: "int64"        
+      CreatedDate:
+        type: "string"
+        format: "date-time"
+      UpdatedDate:
+        type: "string"
+        format: "date-time"
+      StartDate:
+        type: "string"
+        format: "date-time"
+      EndDate:
+        type: "string"
+        format: "date-time"        
+    xml:
+      name: "SectionEnrollment"  
+  SectionAssignment:
+    type: "object"
+    properties:
+      SectionAssignID:
+        type: "integer"
+        format: "int64"
+      UserID:
+        type: "integer"
+        format: "int64"
+      SubmissionText:
+        type: "string"  
+      Score:
+        type: "integer"
+        format: "int64"        
+      CreatedDate:
+        type: "string"
+        format: "date-time"
+      UpdatedDate:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "SectionAssignment"       
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
