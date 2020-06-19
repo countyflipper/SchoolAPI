@@ -15,9 +15,11 @@ namespace Entities
         {
             modelBuilder.ApplyConfiguration(new OrganizationConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
         }
 
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Courses> Courses { get; set; }
     }
 }

@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200619010601_AddCourseWithUserNOrg.cs" />
+    <Compile Remove="Migrations\20200619010601_AddCourseWithUserNOrg.Designer.cs" />
+    <Compile Remove="Migrations\20200619013445_AddCourseWithUserNOrg1.cs" />
+    <Compile Remove="Migrations\20200619013445_AddCourseWithUserNOrg1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
