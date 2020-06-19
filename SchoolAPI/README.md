@@ -22,5 +22,8 @@ This will be my main directory aka the root for files and link.
 
 ## Module 6
 *   [Module 6](https://github.com/countyflipper/CompanyEmployees/tree/Module6)
+![Server Explorer](https://github.com/countyflipper/SchoolAPI/blob/Module6/SchoolAPI/screenshots/Module6-1.PNG)
+![Courses Table](https://github.com/countyflipper/SchoolAPI/blob/Module6/SchoolAPI/screenshots/Module6-2.PNG)
+![User Table](https://github.com/countyflipper/SchoolAPI/blob/Module6/SchoolAPI/screenshots/Module6-3.PNG)
 
 
