@@ -5,16 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
-    public class Courses
+    public class SectionEnrollManage
     {
-        [Column("CourseID")]
+        [Column("SectionEnrollID")]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Course name is a required field.")]
+        [Required(ErrorMessage = "SectionEnrollManage name is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
-        public string CourseName { get; set; }
 
-        public string Description { get; set; }
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

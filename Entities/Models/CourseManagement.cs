@@ -5,22 +5,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
 {
-    public class Courses
+    public class CourseManagement
     {
-        [Column("CourseID")]
+        [Column("CourseManagementID")]
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Course name is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
-        public string CourseName { get; set; }
+        public ICollection<SectionAssign> sectionAssigns { get; set; }
+
+        public string AssignmentTitle { get; set; }
 
         public string Description { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-
-        public DateTime UpdatedDate { get; set; }
-
-        public ICollection<User> Users { get; set; }
+        public ICollection<Courses> Courses { get; set; }
         //----------------------------------------------------
 
         /*     [ForeignKey(nameof(User))]
