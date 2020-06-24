@@ -20,7 +20,7 @@ namespace Entities.Models
 
         public DateTime UpdatedDate { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        //public ICollection<string> collection = (ICollection<string>) Courses; 
         //----------------------------------------------------
 
         /*     [ForeignKey(nameof(User))]

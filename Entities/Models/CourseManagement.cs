@@ -12,13 +12,13 @@ namespace Entities.Models
 
         [Required(ErrorMessage = "Course name is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
-        public ICollection<SectionAssign> sectionAssigns { get; set; }
+        public int AssigmentID { get; set; }
 
         public string AssignmentTitle { get; set; }
 
         public string Description { get; set; }
 
-        public ICollection<Courses> Courses { get; set; }
+        public Courses Courses { get; set; }
         //----------------------------------------------------
 
         /*     [ForeignKey(nameof(User))]

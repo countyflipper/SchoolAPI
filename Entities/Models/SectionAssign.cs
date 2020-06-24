@@ -19,8 +19,9 @@ namespace Entities.Models
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
 
-        public ICollection<CourseSection> CourseSections { get; set; }
-        public ICollection<User> Users { get; set; }
+        public string UsersID { get; set; }
+
+        public string  AssignID { get; set; }
 
         //----------------------------------------------------
 
