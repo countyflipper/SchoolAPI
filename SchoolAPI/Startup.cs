@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using System.IO;
+using AutoMapper;
 
 namespace SchoolAPI
 {
@@ -26,6 +27,8 @@ namespace SchoolAPI
             services.ConfigureLoggerService();
             services.ConfigureSqlContext(Configuration);
             services.ConfigureRepositoryManager();
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers();
         }
 
