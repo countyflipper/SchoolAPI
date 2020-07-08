@@ -21,12 +21,12 @@ namespace Entities.Models
 
         public DateTime UpdatedDate { get; set; }
 
-        [ForeignKey(nameof(Organization))]
+        //[ForeignKey(nameof(Organization))]
         public Guid OrganizationId { get; set; }
         public Organization Organization { get; set; }
 
 
-        [ForeignKey(nameof(Courses))]
+        //[ForeignKey(nameof(Courses))]
         public Guid CourseID { get; set; }
         public Courses Courses { get; set; }
     }

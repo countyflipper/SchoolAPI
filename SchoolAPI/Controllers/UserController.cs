@@ -60,7 +60,7 @@ namespace SchoolAPI.Controllers
 
         }
 
-        [HttpPost(Name = "createUser")]
+        [HttpPost(Name = "UserByID")]
         public IActionResult CreateOrganization([FromBody] UserForCreationDto user)
         {
             if (user == null)
@@ -68,11 +68,7 @@ namespace SchoolAPI.Controllers
                 _logger.LogError("User ForCreationDto object sent from client is null.");
                 return BadRequest("User ForCreationDto object is null");
             }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the UserForCreationDto object");
-                return UnprocessableEntity(ModelState);
-            }
+
 
             var userEntity = _mapper.Map<User>(user);
 
@@ -81,7 +77,7 @@ namespace SchoolAPI.Controllers
 
             var userToReturn = _mapper.Map<UserDto>(userEntity);
 
-            return CreatedAtRoute("getOrganizationById", new { id = userToReturn.id }, userToReturn);
+            return CreatedAtRoute("UserByID", new { id = userToReturn.id }, userToReturn);
         }
 
         [HttpPut("{id}")]
