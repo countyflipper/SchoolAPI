@@ -11,6 +11,9 @@ namespace SchoolAPI
             CreateMap<User, UserDto>()
                     .ForMember(c => c.UserName,
                         opt => opt.MapFrom(x => string.Join(' ', x.Status, x.SystemRoleID)));
+
+            CreateMap<UserForCreationDto, User>();
+            CreateMap<UserForUpdateDto, User>();
         }
     }
 }

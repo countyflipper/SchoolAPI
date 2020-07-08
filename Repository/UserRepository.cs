@@ -23,5 +23,17 @@ namespace Repository
         public User GetUser(Guid Id, bool trackChanges) =>
          FindByCondition(c => c.Id.Equals(Id), trackChanges)
         .SingleOrDefault();
+
+
+        public void CreateUser(User user) => Create(user);
+
+        public IEnumerable<User> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+            FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToList();
+
+        public void DeleteUser(User user)
+        {
+            Delete(user);
+        }
     }
 }
