@@ -10,15 +10,13 @@ namespace Entities.Models
         [Column("CourseManagementID")]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Course name is a required field.")]
-        [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
         public int AssigmentID { get; set; }
 
         public string AssignmentTitle { get; set; }
 
         public string Description { get; set; }
 
-        public Courses Courses { get; set; }
+        //public Courses Courses { get; set; }
         //----------------------------------------------------
 
         /*     [ForeignKey(nameof(User))]

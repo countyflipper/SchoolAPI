@@ -10,8 +10,6 @@ namespace Entities.Models
         [Column("CourseID")]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Course name is a required field.")]
-        [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
         public string CourseName { get; set; }
 
         public string Description { get; set; }

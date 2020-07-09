@@ -80,6 +80,10 @@ namespace SchoolAPI.Controllers
             return CreatedAtRoute("UserByID", new { id = userToReturn.id }, userToReturn);
         }
 
+
+
+
+
         [HttpPut("{id}")]
         public IActionResult UpdateOrganization(Guid id, [FromBody] UserForUpdateDto user)
         {

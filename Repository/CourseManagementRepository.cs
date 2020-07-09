@@ -16,13 +16,24 @@ namespace Repository
         }
 
         public IEnumerable<CourseManagement> GetAllCourseManagment(bool trackChanges) =>
-   FindAll(trackChanges)
-   .OrderBy(c => c.AssignmentTitle)
-   .ToList();
+            FindAll(trackChanges)
+            .OrderBy(c => c.AssignmentTitle)
+            .ToList();
 
 
         public CourseManagement GetCourseManagement(Guid Id, bool trackChanges) =>
-         FindByCondition(c => c.Id.Equals(Id), trackChanges)
-        .SingleOrDefault();
+            FindByCondition(c => c.Id.Equals(Id), trackChanges)
+            .SingleOrDefault();
+
+        public void CreateCourseManagement(CourseManagement coursemanage) => Create(coursemanage);
+
+        public IEnumerable<CourseManagement> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+            FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToList();
+
+        public void DeleteCourseManagement(CourseManagement coursemanage)
+        {
+            Delete(coursemanage);
+        }
     }
 }

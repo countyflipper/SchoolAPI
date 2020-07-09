@@ -25,5 +25,17 @@ namespace Repository
         public Courses GetCourse(Guid Id, bool trackChanges) =>
          FindByCondition(c => c.Id.Equals(Id), trackChanges)
         .SingleOrDefault();
+
+
+        public void CreateCourse(Courses courses) => Create(courses);
+
+        public IEnumerable<Courses> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+            FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToList();
+
+        public void DeleteCourse(Courses courses)
+        {
+            Delete(courses);
+        }
     }
 }
