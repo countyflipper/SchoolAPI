@@ -24,5 +24,18 @@ namespace Repository
         public SectionAssign GetSectionAssign(Guid Id, bool trackChanges) =>
          FindByCondition(c => c.Id.Equals(Id), trackChanges)
         .SingleOrDefault();
+
+
+
+        public void CreateSectionAssign(SectionAssign sectionassign) => Create(sectionassign);
+
+        public IEnumerable<SectionAssign> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
+            FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToList();
+
+        public void DeleteSectionAssign(SectionAssign sectionassign)
+        {
+            Delete(sectionassign);
+        }
     }
 }

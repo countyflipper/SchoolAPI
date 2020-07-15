@@ -68,7 +68,11 @@ namespace SchoolAPI.Controllers
                 _logger.LogError("User ForCreationDto object sent from client is null.");
                 return BadRequest("User ForCreationDto object is null");
             }
-
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the UserForUpdateDto object");
+                return UnprocessableEntity(ModelState);
+            }
 
             var userEntity = _mapper.Map<User>(user);
 

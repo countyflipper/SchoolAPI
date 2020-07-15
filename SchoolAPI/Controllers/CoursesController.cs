@@ -28,8 +28,8 @@ namespace SchoolAPI.Controllers
         {
             try
             {
-                var organizations = _repository.Course.GetAllCourses(trackChanges: false);
-                return Ok(organizations);
+                var courses = _repository.Course.GetAllCourses(trackChanges: false);
+                return Ok(courses);
                 /*var organizationDto = _mapper.Map<IEnumerable<OrganizationDto>>(organizations);
                 return Ok(organizationDto);*/
 
@@ -41,7 +41,7 @@ namespace SchoolAPI.Controllers
             }
         }
         [HttpGet("{id}")]
-        public IActionResult GetOrganizationy(Guid id)
+        public IActionResult GetCousesy(Guid id)
         {
             try
             {
@@ -52,8 +52,8 @@ namespace SchoolAPI.Controllers
                 }
                 else
                 {
-                    var organizationDto = _mapper.Map<Courses>(organization);
-                    return Ok(organizationDto);
+                    var CourseDto = _mapper.Map<Courses>(organization);
+                    return Ok(CourseDto);
                 }
 
             }
@@ -71,14 +71,18 @@ namespace SchoolAPI.Controllers
 
 
         [HttpPost(Name = "CourseByID")]
-        public IActionResult CreateOrganization([FromBody] CourseForCreationDto course)
+        public IActionResult CreateCourse([FromBody] CourseForCreationDto course)
         {
             if (course == null)
             {
-                _logger.LogError("course ForCreationDto object sent from client is null.");
-                return BadRequest("course ForCreationDto object is null");
+                _logger.LogError("course CourseForCreationDto object sent from client is null.");
+                return BadRequest("course CourseForCreationDto object is null");
             }
-
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CourseForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
 
             var courseEntity = _mapper.Map<Courses>(course);
 

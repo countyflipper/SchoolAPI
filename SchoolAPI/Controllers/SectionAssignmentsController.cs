@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -40,19 +41,19 @@ namespace SchoolAPI.Controllers
             }
         }
         [HttpGet("{id}")]
-        public IActionResult GetOrganizationy(Guid id)
+        public IActionResult GetSectionAssigny(Guid id)
         {
             try
             {
                 var organization = _repository.SectionAssign.GetSectionAssign(id, trackChanges: false); if (organization == null)
                 {
-                    _logger.LogInfo($"Organization with id: {id} doesn't exist in the database.");
+                    _logger.LogInfo($"SectionAssign with id: {id} doesn't exist in the database.");
                     return NotFound();
                 }
                 else
                 {
-                    var organizationDto = _mapper.Map<UserDto>(organization);
-                    return Ok(organizationDto);
+                    var SectionAssignDTO = _mapper.Map<SectionAssignDTO>(organization);
+                    return Ok(SectionAssignDTO);
                 }
 
             }
@@ -62,6 +63,81 @@ namespace SchoolAPI.Controllers
                 return StatusCode(500, "Internal server error");
             }
 
+        }
+
+
+
+
+
+        [HttpPost(Name = "SectionAssignByID")]
+        public IActionResult CreateSectionAssign([FromBody] SectionAssignForCreationDTO sectionassign)
+        {
+            if (sectionassign == null)
+            {
+                _logger.LogError("course CourseForCreationDto object sent from client is null.");
+                return BadRequest("course CourseForCreationDto object is null");
+            }
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CourseForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+
+            var SectionAssignEntity = _mapper.Map<SectionAssign>(sectionassign);
+
+            _repository.SectionAssign.CreateSectionAssign(SectionAssignEntity);
+            _repository.Save();
+
+            var userToReturn = _mapper.Map<SectionAssignDTO>(SectionAssignEntity);
+
+            return CreatedAtRoute("SectionAssignByID", new { id = userToReturn.AssignID }, userToReturn);
+        }
+
+
+
+
+
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateSectionAssign(Guid id, [FromBody] SectionAssignForUpdateDTO sectionassign)
+        {
+            if (sectionassign == null)
+            {
+                _logger.LogError("SectionAssignForUpdateDTO object sent from client is null.");
+                return BadRequest("SectionAssignForUpdateDTO object is null");
+            }
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the SectionAssignForUpdateDTO object");
+                return UnprocessableEntity(ModelState);
+            }
+            var sectionassignEntity = _repository.SectionAssign.GetSectionAssign(id, trackChanges: true);
+            if (sectionassignEntity == null)
+            {
+                _logger.LogInfo($"SectionAssign with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            _mapper.Map(sectionassign, sectionassignEntity);
+            _repository.Save();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteSectionAssign(Guid id)
+        {
+            var SectionAssign = _repository.SectionAssign.GetSectionAssign(id, trackChanges: false);
+            if (SectionAssign == null)
+            {
+                _logger.LogInfo($"SectionAssign with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+
+            _repository.SectionAssign.DeleteSectionAssign(SectionAssign);
+            _repository.Save();
+
+            return NoContent();
         }
     }
 }

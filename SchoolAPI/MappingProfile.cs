@@ -32,6 +32,14 @@ namespace SchoolAPI
             CreateMap<CourseForCreationDto, Courses>();
             CreateMap<CourseForUpdateDto, Courses>();
             //-----------------------------------------------------------------
+
+            CreateMap<SectionAssign, SectionAssignDTO>()
+                .ForMember(c => c.AssignID,
+                 opt => opt.MapFrom(x => string.Join(' ', x.SubmissionText, x.Score)));
+
+            CreateMap<SectionAssignForCreationDTO, SectionAssign>();
+            CreateMap<SectionAssignForUpdateDTO, SectionAssign>();
+            //-----------------------------------------------------------------
         }
     }
 }

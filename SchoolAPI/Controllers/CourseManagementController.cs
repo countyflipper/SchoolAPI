@@ -73,16 +73,20 @@ namespace SchoolAPI.Controllers
         /**************************************************************************************/
 
         [HttpPost(Name = "CourseManageByID")]
-        public IActionResult CreateOrganization([FromBody] CourseManageForCreationDto user)
+        public IActionResult CreateOrganization([FromBody] CourseManageForCreationDto CourseManage)
         {
-            if (user == null)
+            if (CourseManage == null)
             {
                 _logger.LogError("CourseManage ForCreationDto object sent from client is null.");
                 return BadRequest("CourseManage ForCreationDto object is null");
             }
 
-
-            var coursemanageEntity = _mapper.Map<CourseManagement>(user);
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the CourseManageForCreationDto object");
+                return UnprocessableEntity(ModelState);
+            }
+            var coursemanageEntity = _mapper.Map<CourseManagement>(CourseManage);
 
             _repository.CourseManagement.CreateCourseManagement(coursemanageEntity);
             _repository.Save();
@@ -94,7 +98,7 @@ namespace SchoolAPI.Controllers
 
         /**************************************************************************************/
         [HttpPut("{id}")]
-        public IActionResult UpdateOrganization(Guid id, [FromBody] CourseManageForUpdateDto coursemanage)
+        public IActionResult UpdateCourseManagment(Guid id, [FromBody] CourseManageForUpdateDto coursemanage)
         {
             if (coursemanage == null)
             {
@@ -121,7 +125,7 @@ namespace SchoolAPI.Controllers
 
         /**************************************************************************************/
         [HttpDelete("{id}")]
-        public IActionResult DeleteOrganization(Guid id)
+        public IActionResult DeleteCourseManagment(Guid id)
         {
             var organization = _repository.CourseManagement.GetCourseManagement(id, trackChanges: false);
             if (organization == null)
