@@ -8,8 +8,9 @@ using System.Collections.Generic;
 
 namespace SchoolAPI.Controllers
 {
-    [Route("api/v1/users")]
+    [Route("api/v1/organizations")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class UserController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
