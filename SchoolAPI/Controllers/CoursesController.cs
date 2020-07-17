@@ -3,8 +3,11 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Entities.RequestFeatures;
 
 namespace SchoolAPI.Controllers
 {
@@ -24,22 +27,27 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCourses()
+        public async Task<IActionResult> GetCourses(Guid courseID, [FromQuery] CoursesParameters coursesParameters)
         {
-            try
+            var company = await _repository.Course.GetCoursesAsync(courseID, coursesParameters, trackChanges: false);
+            if (company == null)
             {
-                var courses = _repository.Course.GetAllCourses(trackChanges: false);
-                return Ok(courses);
-                /*var organizationDto = _mapper.Map<IEnumerable<OrganizationDto>>(organizations);
-                return Ok(organizationDto);*/
+                _logger.LogInfo($"Course with id: {courseID} doesn't exist in the database.");
+                return NotFound();
+            }
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong in the {nameof(GetCourses)} action {ex}");
-                return StatusCode(500, "Internal server error");
-            }
+            var coursesFromDb = await _repository.Course.GetCoursesAsync(courseID, coursesParameters, trackChanges: false);
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(coursesFromDb.MetaData));
+
+            var coursesDTO = _mapper.Map<IEnumerable<CourseDto>>(coursesFromDb);
+
+            return Ok(coursesDTO);
         }
+
+
+
+
         [HttpGet("{id}")]
         public IActionResult GetCousesy(Guid id)
         {

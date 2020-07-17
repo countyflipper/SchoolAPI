@@ -1,9 +1,13 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Entities.RequestFeatures;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace Repository
 {
@@ -14,6 +18,20 @@ namespace Repository
         {
         }
 
+
+        public async Task<PagedList<Courses>> GetCoursesAsync(Guid courseID, CoursesParameters ecoursesParameters, bool trackChanges)
+        {
+            var employees = await FindByCondition(e => e.Id.Equals(courseID), trackChanges)
+              .OrderBy(e => e.CourseName)
+              .ToListAsync();
+
+            return PagedList<Courses>
+              .ToPagedList(employees, ecoursesParameters.PageNumber, ecoursesParameters.PageSize);
+        }
+
+        public async Task<Courses> GetCourseAsync(Guid id, bool trackChanges) =>
+            await FindByCondition(e => e.Id.Equals(id) && e.Id.Equals(id), trackChanges)
+            .SingleOrDefaultAsync();
 
 
         public IEnumerable<Courses> GetAllCourses(bool trackChanges) =>
@@ -32,6 +50,9 @@ namespace Repository
         public IEnumerable<Courses> GetByIds(IEnumerable<Guid> ids, bool trackChanges) =>
             FindByCondition(x => ids.Contains(x.Id), trackChanges)
             .ToList();
+
+
+
 
         public void DeleteCourse(Courses courses)
         {
