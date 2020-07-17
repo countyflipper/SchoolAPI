@@ -24,4 +24,14 @@ This will be my main directory aka the root for files and link.
 *   [Module 6](https://github.com/countyflipper/CompanyEmployees/tree/Module6)
 
 ## Module 7
+<<<<<<< HEAD
 *   [Module 7](https://github.com/countyflipper/SchoolAPI/tree/Module7/SchoolAPI)
+
+## Module 8
+*   [Module 8](https://github.com/countyflipper/SchoolAPI/tree/Module8/SchoolAPI)
+
+## Module 9
+*   [Module 9](https://github.com/countyflipper/SchoolAPI/tree/Module9/SchoolAPI)
+
+## Module 10
+*   [Module 10](https://github.com/countyflipper/SchoolAPI/tree/Module10/SchoolAPI)
