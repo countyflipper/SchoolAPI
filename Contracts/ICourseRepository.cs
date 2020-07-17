@@ -11,7 +11,7 @@ namespace Contracts
         IEnumerable<Courses> GetAllCourses(bool trackChanges);
         Courses GetCourse(Guid companyId, bool trackChanges);
 
-        Task<PagedList<Courses>> GetCoursesAsync(Guid courseID, CoursesParameters coursesParameters, bool trackChanges);
+        Task<PagedList<Courses>> GetCoursesAsync(CoursesParameters coursesParameters, bool trackChanges);
         Task<Courses> GetCourseAsync(Guid companyId, bool trackChanges);
 
         void CreateCourse(Courses courses);

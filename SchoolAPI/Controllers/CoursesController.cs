@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Entities.RequestFeatures;
+using SchoolAPI.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
+
 
 namespace SchoolAPI.Controllers
 {
@@ -27,124 +30,114 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCourses(Guid courseID, [FromQuery] CoursesParameters coursesParameters)
+        public async Task<IActionResult> GetEmployeesForCompany( [FromQuery] CoursesParameters employeeParameters)
         {
-            var company = await _repository.Course.GetCoursesAsync(courseID, coursesParameters, trackChanges: false);
+            //var company = await _repository.Course.GetCourseAsync(companyId, trackChanges: false);
+            //if (company == null)
+            //{
+            //    _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
+            //    return NotFound();
+            //}
+
+            var employeesFromDb = await _repository.Course.GetCoursesAsync( employeeParameters, trackChanges: false);
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(employeesFromDb.MetaData));
+
+            var employeesDto = _mapper.Map<IEnumerable<CourseDto>>(employeesFromDb);
+
+            return Ok(employeesDto);
+        }
+
+        [HttpGet("{id}", Name = "GetEmployeeForCompany")]
+        public async Task<IActionResult> GetEmployeeForCompany(Guid id)
+        {
+            var company = await _repository.Course.GetCourseAsync(id, trackChanges: false);
             if (company == null)
             {
-                _logger.LogInfo($"Course with id: {courseID} doesn't exist in the database.");
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
 
-            var coursesFromDb = await _repository.Course.GetCoursesAsync(courseID, coursesParameters, trackChanges: false);
 
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(coursesFromDb.MetaData));
+            var employee = _mapper.Map<CourseDto>(company);
 
-            var coursesDTO = _mapper.Map<IEnumerable<CourseDto>>(coursesFromDb);
-
-            return Ok(coursesDTO);
+            return Ok(employee);
         }
 
 
-
-
-        [HttpGet("{id}")]
-        public IActionResult GetCousesy(Guid id)
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> CreateEmployeeForCompany(Guid companyId, [FromBody] CourseForCreationDto employee)
         {
-            try
+            var company = await _repository.Course.GetCourseAsync(companyId, trackChanges: false);
+            if (company == null)
             {
-                var organization = _repository.Course.GetCourse(id, trackChanges: false); if (organization == null)
-                {
-                    _logger.LogInfo($"Course with id: {id} doesn't exist in the database.");
-                    return NotFound();
-                }
-                else
-                {
-                    var CourseDto = _mapper.Map<Courses>(organization);
-                    return Ok(CourseDto);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong in the {nameof(GetCourses)} action {ex}");
-                return StatusCode(500, "Internal server error");
-            }
-
-        }
-
-
-
-
-
-
-        [HttpPost(Name = "CourseByID")]
-        public IActionResult CreateCourse([FromBody] CourseForCreationDto course)
-        {
-            if (course == null)
-            {
-                _logger.LogError("course CourseForCreationDto object sent from client is null.");
-                return BadRequest("course CourseForCreationDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CourseForCreationDto object");
-                return UnprocessableEntity(ModelState);
-            }
-
-            var courseEntity = _mapper.Map<Courses>(course);
-
-            _repository.Course.CreateCourse(courseEntity);
-            _repository.Save();
-
-            var userToReturn = _mapper.Map<CourseDto>(courseEntity);
-
-            return CreatedAtRoute("CourseByID", new { id = userToReturn.id }, userToReturn);
-        }
-
-
-
-
-
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateOrganization(Guid id, [FromBody] CourseForUpdateDto course)
-        {
-            if (course == null)
-            {
-                _logger.LogError("CourseForUpdateDto object sent from client is null.");
-                return BadRequest("CourseForUpdateDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CourseForUpdateDto object");
-                return UnprocessableEntity(ModelState);
-            }
-            var courseEntity = _repository.Course.GetCourse(id, trackChanges: true);
-            if (courseEntity == null)
-            {
-                _logger.LogInfo($"course with id: {id} doesn't exist in the database.");
+                _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
                 return NotFound();
             }
 
-            _mapper.Map(course, courseEntity);
-            _repository.Save();
+            var employeeEntity = _mapper.Map<Courses>(employee);
+
+            _repository.Course.CreateCourse(employeeEntity);
+            await _repository.SaveAsync();
+
+            var employeeToReturn = _mapper.Map<CourseDto>(employeeEntity);
+
+            return CreatedAtRoute("GetEmployeeForCompany", new { companyId, id = employeeToReturn.id }, employeeToReturn);
+        }
+
+        [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidateCourseExistsAttribute))]
+        public async Task<IActionResult> DeleteEmployeeForCompany(Guid companyId, Guid id)
+        {
+            var employeeForCompany = HttpContext.Items["employee"] as Courses;
+
+            _repository.Course.DeleteCourse(employeeForCompany);
+            await _repository.SaveAsync();
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteOrganization(Guid id)
+        [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateCourseExistsAttribute))]
+        public async Task<IActionResult> UpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] CourseForUpdateDto employee)
         {
-            var organization = _repository.Course.GetCourse(id, trackChanges: false);
-            if (organization == null)
+            var employeeEntity = HttpContext.Items["employee"] as Courses;
+
+            _mapper.Map(employee, employeeEntity);
+            await _repository.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidateCourseExistsAttribute))]
+        public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<CourseForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
             {
-                _logger.LogInfo($"User with id: {id} doesn't exist in the database.");
-                return NotFound();
+                _logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
             }
 
-            _repository.Course.DeleteCourse(organization);
-            _repository.Save();
+            var employeeEntity = HttpContext.Items["employee"] as Courses;
+
+            var employeeToPatch = _mapper.Map<CourseForUpdateDto>(employeeEntity);
+
+            patchDoc.ApplyTo(employeeToPatch, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
+
+            TryValidateModel(employeeToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the patch document");
+                return UnprocessableEntity(ModelState);
+            }
+
+            _mapper.Map(employeeToPatch, employeeEntity);
+
+            await _repository.SaveAsync();
 
             return NoContent();
         }

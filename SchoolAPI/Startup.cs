@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using SchoolAPI.Extensions;
 using System.IO;
+using SchoolAPI.ActionFilters;
 
 namespace SchoolAPI
 {
@@ -31,6 +32,9 @@ namespace SchoolAPI
             services.ConfigureSqlContext(Configuration);
             services.ConfigureRepositoryManager();
             services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<ValidateCourseExistsAttribute>();
+
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options => {
                 options.SuppressModelStateInvalidFilter = true;
             });

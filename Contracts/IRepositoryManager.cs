@@ -1,4 +1,6 @@
-﻿namespace Contracts
+﻿using System.Threading.Tasks;
+
+namespace Contracts
 {
     public interface IRepositoryManager
     {
@@ -11,7 +13,7 @@
         ISectionAssignRepository SectionAssign { get; }
 
         ICourseManagement CourseManagement { get; }
-
+        Task SaveAsync();
         void Save();
     }
 }

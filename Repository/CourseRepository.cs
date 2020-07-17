@@ -19,15 +19,16 @@ namespace Repository
         }
 
 
-        public async Task<PagedList<Courses>> GetCoursesAsync(Guid courseID, CoursesParameters ecoursesParameters, bool trackChanges)
+        public async Task<PagedList<Courses>> GetCoursesAsync(CoursesParameters ecoursesParameters, bool trackChanges)
         {
-            var employees = await FindByCondition(e => e.Id.Equals(courseID), trackChanges)
+            var employees = await FindAll(trackChanges)
               .OrderBy(e => e.CourseName)
               .ToListAsync();
 
             return PagedList<Courses>
               .ToPagedList(employees, ecoursesParameters.PageNumber, ecoursesParameters.PageSize);
         }
+
 
         public async Task<Courses> GetCourseAsync(Guid id, bool trackChanges) =>
             await FindByCondition(e => e.Id.Equals(id) && e.Id.Equals(id), trackChanges)
