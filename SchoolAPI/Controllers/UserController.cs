@@ -3,12 +3,18 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Entities.RequestFeatures;
+using SchoolAPI.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
+
 
 namespace SchoolAPI.Controllers
 {
-    [Route("api/v1/organizations")]
+    [Route("api/v1/Users")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "v1")]
     public class UserController : ControllerBase
@@ -25,44 +31,42 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsersAll( [FromQuery] UserParameter employeeParameters)
         {
-
-                var m_users = _repository.User.GetAllUsers(trackChanges: false);
-                //return Ok(organizations);
-                var UserDto = _mapper.Map<IEnumerable<UserDto>>(m_users);
-                //throw new Exception("Exception");
-                return Ok(UserDto);
+            if (!employeeParameters.ValidAgeRange)
+                return BadRequest("Max age can't be less than min age.");
 
 
+            var employeesFromDb = await _repository.User.GetAllUserAsync( employeeParameters, trackChanges: false);
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(employeesFromDb.MetaData));
+
+            var employeesDto = _mapper.Map<IEnumerable<UserDto>>(employeesFromDb);
+
+            return Ok(employeesDto);
         }
-        [HttpGet("{id}")]
-        public IActionResult GetOrganizationy(Guid id)
+
+
+
+        [HttpGet("{id}", Name = "GetUser")]
+        public async Task<IActionResult> GetUser(Guid id)
         {
-            try
-            {
-                var organization = _repository.User.GetUser(id, trackChanges: false); if (organization == null)
-                {
-                    _logger.LogInfo($"User with id: {id} doesn't exist in the database.");
-                    return NotFound();
-                }
-                else
-                {
-                    var organizationDto = _mapper.Map<UserDto>(organization);
-                    return Ok(organizationDto);
-                }
 
-            }
-            catch (Exception ex)
+
+            var userDb = await _repository.User.GetUser( id, trackChanges: false);
+            if (userDb == null)
             {
-                _logger.LogError($"Something went wrong in the {nameof(GetUsers)} action {ex}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogInfo($"User with id: {id} doesn't exist in the database.");
+                return NotFound();
             }
 
+            var employee = _mapper.Map<UserDto>(userDb);
+
+            return Ok(employee);
         }
 
         [HttpPost(Name = "UserByID")]
-        public IActionResult CreateOrganization([FromBody] UserForCreationDto user)
+        public IActionResult CreateUser([FromBody] UserForCreationDto user)
         {
             if (user == null)
             {
@@ -90,7 +94,7 @@ namespace SchoolAPI.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateOrganization(Guid id, [FromBody] UserForUpdateDto user)
+        public IActionResult UpdateUser(Guid id, [FromBody] UserForUpdateDto user)
         {
             if (user == null)
             {
@@ -115,20 +119,25 @@ namespace SchoolAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteOrganization(Guid id)
-        {
-            var organization = _repository.User.GetUser(id, trackChanges: false);
-            if (organization == null)
-            {
-                _logger.LogInfo($"User with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
 
-            _repository.User.DeleteUser(organization);
-            _repository.Save();
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser( Guid id)
+        {
+            var user = await _repository.User.GetUser(id, trackChanges: false); 
+            if (user == null) 
+            { 
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database."); 
+                return NotFound(); 
+            }
+            _repository.User.DeleteUser(user); 
+
+            await _repository.SaveAsync(); 
 
             return NoContent();
         }
+
+
     }
 }
