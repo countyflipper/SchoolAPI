@@ -1,5 +1,6 @@
 using AutoMapper;
 using Contracts;
+using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -10,6 +11,7 @@ using NLog;
 using SchoolAPI.Extensions;
 using System.IO;
 using SchoolAPI.ActionFilters;
+using Repository.DataShaping;
 
 namespace SchoolAPI
 {
@@ -34,6 +36,8 @@ namespace SchoolAPI
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<ValidateCourseExistsAttribute>();
+
+            services.AddScoped<IDataShaper<UserDto>, DataShaper<UserDto>>();
 
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options => {
                 options.SuppressModelStateInvalidFilter = true;

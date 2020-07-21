@@ -1,16 +1,15 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using SchoolAPI.ActionFilters;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Entities.RequestFeatures;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Entities.RequestFeatures;
-using SchoolAPI.ActionFilters;
-using Microsoft.AspNetCore.JsonPatch;
-
 
 namespace SchoolAPI.Controllers
 {
@@ -22,28 +21,31 @@ namespace SchoolAPI.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly IDataShaper<UserDto> _dataShaper;
 
-        public UserController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+
+        public UserController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IDataShaper<UserDto> dataShaper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _dataShaper = dataShaper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAll( [FromQuery] UserParameter employeeParameters)
+        public async Task<IActionResult> GetUsersAll( [FromQuery] UserParameter userParameters)
         {
-            if (!employeeParameters.ValidAgeRange)
+            if (!userParameters.ValidAgeRange)
                 return BadRequest("Max age can't be less than min age.");
 
 
-            var employeesFromDb = await _repository.User.GetAllUserAsync( employeeParameters, trackChanges: false);
+            var usersFromDb = await _repository.User.GetAllUserAsync( userParameters, trackChanges: false);
 
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(employeesFromDb.MetaData));
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(usersFromDb.MetaData));
 
-            var employeesDto = _mapper.Map<IEnumerable<UserDto>>(employeesFromDb);
+            var userDto = _mapper.Map<IEnumerable<UserDto>>(usersFromDb);
 
-            return Ok(employeesDto);
+            return Ok(_dataShaper.ShapeData(userDto, userParameters.Fields));
         }
 
 
@@ -60,9 +62,9 @@ namespace SchoolAPI.Controllers
                 return NotFound();
             }
 
-            var employee = _mapper.Map<UserDto>(userDb);
+            var user = _mapper.Map<UserDto>(userDb);
 
-            return Ok(employee);
+            return Ok(user);
         }
 
         [HttpPost(Name = "UserByID")]
