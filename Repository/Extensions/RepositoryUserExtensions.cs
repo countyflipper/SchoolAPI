@@ -10,17 +10,17 @@ namespace Repository.Extensions
         public static IQueryable<User> FilterEmployees(this IQueryable<User> users, uint minAge, uint maxAge) =>
             users.Where(e => (e.age >= minAge && e.age <= maxAge));
 
-        //public static IQueryable<Employee> Search(this IQueryable<Employee> employees, string searchTerm)
-        //{
-        //    if (string.IsNullOrWhiteSpace(searchTerm))
-        //        return employees;
+        public static IQueryable<User> Search(this IQueryable<User> user, string searchUsername)
+        {
+            if (string.IsNullOrWhiteSpace(searchUsername))
+                return user;
 
-        //    var lowerCaseTerm = searchTerm.Trim().ToLower();
+            var lowerCaseTerm = searchUsername.Trim().ToLower();
 
-        //    return employees.Where(e => e.Name.ToLower().Contains(lowerCaseTerm));
-        //}
+            return user.Where(e => e.UserName.ToLower().Contains(lowerCaseTerm));
+        }
 
-        //public static IQueryable<Employee> Sort(this IQueryable<Employee> employees, string orderByQueryString)
+        //public static IQueryable<User> Sort(this IQueryable<User> employees, string orderByQueryString)
         //{
         //    if (string.IsNullOrWhiteSpace(orderByQueryString))
         //        return employees.OrderBy(e => e.Name);
