@@ -1,7 +1,8 @@
 ﻿using Entities.Models;
+using Repository.Extensions.Utility;
 //using Repository.Extensions.Utility;
 using System.Linq;
-//using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core;
 
 namespace Repository.Extensions
 {
@@ -20,17 +21,17 @@ namespace Repository.Extensions
             return user.Where(e => e.UserName.ToLower().Contains(lowerCaseTerm));
         }
 
-        //public static IQueryable<User> Sort(this IQueryable<User> employees, string orderByQueryString)
-        //{
-        //    if (string.IsNullOrWhiteSpace(orderByQueryString))
-        //        return employees.OrderBy(e => e.Name);
+        public static IQueryable<User> Sort(this IQueryable<User> users, string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return users.OrderBy(e => e.UserName);
 
-        //    var orderQuery = OrderQueryBuilder.CreateOrderQuery<Employee>(orderByQueryString);
+            var orderQuery = OrderQueryBuilder.CreateOrderQuery<User>(orderByQueryString);
 
-        //    if (string.IsNullOrWhiteSpace(orderQuery))
-        //        return employees.OrderBy(e => e.Name);
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return users.OrderBy(e => e.UserName);
 
-        //    return employees.OrderBy(orderQuery);
-        //}
+            return users.OrderBy(orderQuery);
+        }
     }
 }
