@@ -33,6 +33,8 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
+        [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
         public async Task<IActionResult> GetUsersAll( [FromQuery] UserParameter userParameters)
         {
             if (!userParameters.ValidAgeRange)
@@ -136,6 +138,38 @@ namespace SchoolAPI.Controllers
             _repository.User.DeleteUser(user); 
 
             await _repository.SaveAsync(); 
+
+            return NoContent();
+        }
+
+
+        [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidateUserExistsAttribute))]
+        public async Task<IActionResult> PartiallyUpdateUsers(Guid id, [FromBody] JsonPatchDocument<UserForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                _logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
+            }
+
+            var userEntity = HttpContext.Items["employee"] as User;
+
+            var userToPatch = _mapper.Map<UserForUpdateDto>(userEntity);
+
+            patchDoc.ApplyTo(userToPatch, ModelState);
+
+            TryValidateModel(userToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Invalid model state for the patch document");
+                return UnprocessableEntity(ModelState);
+            }
+
+            _mapper.Map(userToPatch, userEntity);
+
+            await _repository.SaveAsync();
 
             return NoContent();
         }

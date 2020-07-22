@@ -39,11 +39,15 @@ namespace SchoolAPI
 
             services.AddScoped<IDataShaper<UserDto>, DataShaper<UserDto>>();
 
+            services.AddScoped<ValidateMediaTypeAttribute>();
+
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options => {
                 options.SuppressModelStateInvalidFilter = true;
             });
             services.ConfigureSwagger();
             services.AddControllers();
+
+            //services.AddCustomMediaTypes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
