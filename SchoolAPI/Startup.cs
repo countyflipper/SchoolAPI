@@ -1,5 +1,6 @@
 using AutoMapper;
 using Contracts;
+using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -10,6 +11,7 @@ using NLog;
 using SchoolAPI.Extensions;
 using System.IO;
 using SchoolAPI.ActionFilters;
+using Repository.DataShaping;
 
 namespace SchoolAPI
 {
@@ -35,11 +37,17 @@ namespace SchoolAPI
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<ValidateCourseExistsAttribute>();
 
+            services.AddScoped<IDataShaper<UserDto>, DataShaper<UserDto>>();
+
+            services.AddScoped<ValidateMediaTypeAttribute>();
+
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options => {
                 options.SuppressModelStateInvalidFilter = true;
             });
             services.ConfigureSwagger();
             services.AddControllers();
+
+            //services.AddCustomMediaTypes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

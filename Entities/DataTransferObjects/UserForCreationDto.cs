@@ -21,6 +21,8 @@ namespace Entities.DataTransferObjects
         [Required(ErrorMessage = "Email is a required field.")]
         public string status { get; set; }
 
+        public int age { get; set; }
+
         public string OrganizationId { get; set; }
 
         public string CourseID { get; set; }

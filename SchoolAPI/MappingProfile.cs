@@ -9,9 +9,7 @@ namespace SchoolAPI
         public MappingProfile()
         {
             //-----------------------------------------------------------------
-            CreateMap<User, UserDto>()
-                    .ForMember(c => c.UserName,
-                        opt => opt.MapFrom(x => string.Join(' ', x.Status, x.SystemRoleID)));
+            CreateMap<User, UserDto>();
 
             CreateMap<UserForCreationDto, User>();
             CreateMap<UserForUpdateDto, User>();
